@@ -1,0 +1,1 @@
+pdm run python -m nuitka --onefile --enable-plugin=tk-inter --output-dir="dist" --disable-console --windows-icon-from-ico="skull.ico" th_updater
