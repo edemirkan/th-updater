@@ -10,3 +10,6 @@ For more information about the mod, please visit;
 - Unzip it to a folder.
 - Run `th_updater.exe`
 - Upon first run, click on `Browse` to set your `TH3.exe` path.
+
+## Screenshots
+![TH Updater v1.1.0](./images/screenshot_th-updater-v1.1.0.png "TH Updater v1.1.0")

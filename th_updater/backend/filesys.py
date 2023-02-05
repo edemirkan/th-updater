@@ -5,7 +5,6 @@ import hashlib
 from pathlib import Path
 import zipfile
 import shutil
-
 from th_updater.backend.artifact import Artifact
 
 
@@ -41,11 +40,12 @@ def copy_artifact_files(source: Path, destination: Path):
 def verify_md5(path: Path, artifact: Artifact) -> bool:
     """Compare remote and local md5 value"""
     artifact_path = Path(path, artifact.name)
-
-    with open(artifact_path, 'rb') as file_to_check:
-        # read contents of the file
-        data = file_to_check.read()
-        # pipe contents of the file through
-        md5_returned = hashlib.md5(data).hexdigest()
-
-    return artifact.md5_hash == md5_returned
+    try:
+        with open(artifact_path, 'rb') as file_to_check:
+            # read contents of the file
+            data = file_to_check.read()
+    except FileNotFoundError:
+        return False
+    else:
+        # file found, pipe contents of the file through
+        return artifact.md5_hash == hashlib.md5(data).hexdigest()

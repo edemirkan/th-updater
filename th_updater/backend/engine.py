@@ -2,6 +2,7 @@
 Main application backend controller
 """
 from pathlib import Path
+from threading import Event
 import tkinter as tk
 
 from th_updater.backend.config import Config
@@ -40,7 +41,7 @@ class AppEngine():
         self.config.th_exe_path = path
         self.config.save(self.cwd)
 
-    def do_version_update(self):
+    def do_version_update(self, event: Event):
         # setup th path
         th_path = Path(self.config.th_exe_path).parent
         # setup staging path
@@ -53,17 +54,19 @@ class AppEngine():
         self.t.append_to_log("Done.", True)
 
         # download remote artifact if it's missing or md5 checksum fails
-        try:
-            filesys.verify_md5(staging_path, self.artifact)
-        except FileNotFoundError:
+        if not filesys.verify_md5(staging_path, self.artifact):
             self.t.append_to_log("Downloading update. Please wait...")
-            web.download_artifact(self.artifact, self.config, staging_path)
+            try:
+                web.download_artifact(
+                    self.artifact, self.config, staging_path, self.t, event)
+            except SystemExit:
+                return None
             self.t.append_to_log("Done.", True)
 
         # verify downloaded files md5 hash
-        if (filesys.verify_md5(staging_path, self.artifact)):
+        if filesys.verify_md5(staging_path, self.artifact):
             source_file = Path(staging_path, self.artifact.name)
-            self.t.append_to_log("Exracting downloaded archive...")
+            self.t.append_to_log("Extracting downloaded archive...")
             filesys.unzip(source_file, staging_extract_path)
             self.t.append_to_log("Done.", True)
             # rename config, if overwrite_config_ini is false
@@ -86,12 +89,16 @@ class AppEngine():
             self.t.append_to_log("Updating version info...")
             self.config.save(self.cwd)
             self.t.append_to_log("Done.", True)
-            # delete staging folder
-            self.t.append_to_log("Deleting staging folder...")
-            filesys.delete_staging_folder(staging_path)
-            self.t.append_to_log("Done.", True)
             self.version_info()
             self.t.append_to_log("Update completed successfully.", True)
         else:
             self.t.append_to_log(
-                "Download error, md5 verification has failed, try to update again...", True)
+                "Download Error! md5 verification has failed, try to update again...", True)
+
+        # clean up staging folder
+        self.t.append_to_log("Cleaning up staging folder...")
+        filesys.delete_staging_folder(staging_path)
+        self.t.append_to_log("Done.", True)
+        # enable back update and launch buttons
+        self.t.btn_update.configure(state=tk.NORMAL)
+        self.t.btn_launch.configure(state=tk.NORMAL)
