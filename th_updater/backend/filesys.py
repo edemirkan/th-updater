@@ -4,13 +4,31 @@ Local file system operations
 import hashlib
 from pathlib import Path
 import zipfile
+import py7zr
 import shutil
 from th_updater.backend.artifact import Artifact
+from th_updater.backend.exception import ZipDecompressError
 
 
-def unzip(source_path: Path, destination_path: Path) -> None:
-    with zipfile.ZipFile(source_path, "r") as zip_ref:
-        zip_ref.extractall(destination_path)
+def unzip(source_path: Path, destination_path: Path) -> None | ZipDecompressError:
+    if source_path.suffix == '.zip':
+        try:
+            with zipfile.ZipFile(source_path, "r") as zip_ref:
+                zip_ref.extractall(destination_path)
+        except zipfile.BadZipFile as e:
+            raise ZipDecompressError(f"Error Msg: {e}")
+
+    elif source_path.suffix == '.7z':
+        try:
+            with py7zr.SevenZipFile(source_path, 'r') as zip7_ref:
+                zip7_ref.extractall(destination_path)
+        except py7zr.Bad7zFile as e:
+            raise ZipDecompressError(f"Error Msg: {e}")
+        except py7zr.UnsupportedCompressionMethodError as e:
+            raise ZipDecompressError(f"Error Msg: {e}")
+    else:
+        raise ZipDecompressError(
+            "Error Msg: Unsupported file format, this program only supports 'Zip' and '7Zip' file formats.")
 
 
 def create_staging_extract_path(path: Path) -> None:

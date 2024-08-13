@@ -1,3 +1,17 @@
+[project]
+name = "th_updater"
+version = "1.2.0"
+description = "TH Mod Updater and Launcher"
+dependencies = [
+    "beautifulsoup4>=4.11.1",
+    "requests>=2.28.2",
+    "pyyaml>=6.0",
+    "py7zr>=0.22.0",
+]
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+readme = {file = "README.md", content-type = "text/markdown"}
+
 [tool.pdm]
 [tool.pdm.dev-dependencies]
 dev = [
@@ -6,15 +20,6 @@ dev = [
     "zstandard>=0.19.0",
     "autopep8>=2.0.1",
 ]
+[tool.setuptools]
+packages = ["th_updater"]
 
-[project]
-name = "th_updater"
-version = "1.1.0"
-description = "TH Mod Updater and Launcher"
-dependencies = [
-    "beautifulsoup4>=4.11.1",
-    "requests>=2.28.2",
-    "pyyaml>=6.0",
-]
-requires-python = ">=3.10"
-license = {file = "LICENSE"}

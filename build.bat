@@ -1,1 +1,1 @@
-pdm run python -m nuitka --onefile --enable-plugin=tk-inter --output-dir="dist" --disable-console --windows-icon-from-ico="skull.ico" th_updater
+E:\code\apps\Python\Python312\Scripts\pdm.exe run python -m nuitka --onefile --enable-plugin=tk-inter --output-dir="dist" --windows-console-mode=disable --windows-icon-from-ico="skull.ico" th_updater

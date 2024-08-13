@@ -1,0 +1,2 @@
+class ZipDecompressError(Exception):
+    pass

@@ -1,6 +1,8 @@
 """
 Artifact related methods
 """
+
+
 class Artifact(object):
     """Class for keeping properties of downloaded file."""
 
