@@ -1,6 +1,6 @@
 [project]
 name = "th_updater"
-version = "1.2.0"
+version = "1.2.1"
 description = "TH Mod Updater and Launcher"
 dependencies = [
     "beautifulsoup4>=4.11.1",
@@ -22,4 +22,3 @@ dev = [
 ]
 [tool.setuptools]
 packages = ["th_updater"]
-
